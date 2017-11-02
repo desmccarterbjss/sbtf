@@ -29,21 +29,27 @@ function GetScriptPathExport(){
 
 function GetMavenLocation(){
 
+	unset MAVEN_LOCATION
+
 	for maven_location in `whereis mvn | sed s/"^[^:]*:[ ]*\(.*\)$"/"\1"/g`
 	do
-		echo "m=${maven_location}"
+		if [ ! "a`echo ${maven_location} | sed -n s/'^\(.*mvn\)$'/'\1'/p`" = "a" ]
+		then
+			if [ ! "a`${maven_location} -version |  grep 'Apache Maven'`" = "a" ]
+			then
+				MAVEN_LOCATION="${maven_location}"
+				break;
+			fi
+		fi
 	done
 
-	exit 0
-
-	if [ ! -d "c:\\Program Files (x86)\\Maven" ]
+	if [ "a${MAVEN_LOCATION}" = "a" ]
 	then
 		echo "[ERR] No maven installed."
-		echo "	    1. Please create Maven folder c:\\Program Files (x86)\\Maven"
-		echo "	    2. Please install Maven (in a sub folder of c:\\Progream Files (x86)\\Maven)"
+		echo "Please install (and set-up) Maven"
 		exit 1
 	else
-		echo "c:\\Program Files (x86)\\Maven"
+		echo "[INFO] Maven installation found: ${MAVEN_LOCATION}"
 	fi
 }
 
@@ -75,4 +81,5 @@ then
 	echo "export PATH=\"\${PATH}:\${SBTF_PROJECT_FOLDER}/scripts\"" >> ~/.bashrc
 fi
 
-. ~/.bashrc
+# Check that we have Maven installed ...
+GetMavenLocation
