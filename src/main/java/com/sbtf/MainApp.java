@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import com.sbtf.logging.Log;
+
 @SpringBootApplication
 public class MainApp {
 
@@ -18,7 +20,7 @@ public class MainApp {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            System.out.println("Sprint Bootable Test Framework - started");
+            Log.infoMessage("Sprint Bootable Test Framework - started");
         };
     }
 }
